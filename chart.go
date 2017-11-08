@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xuri/excelize"
+	"github.com/solojunk/excelize"
 )
 
 var (
