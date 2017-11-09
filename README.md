@@ -17,4 +17,12 @@ go get github.com/solojunk/task
 
 ### 终端实时刷新
 
+![Task](./images/task_CPU.png "Task")
+
+![Task](./images/task_Disk.png "Task")
+
 ### 导出成Xlsx文件
+
+![Task](./images/task_Network.png "Task")
+
+![Task](./images/task_Process.png "Task")
