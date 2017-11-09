@@ -14,7 +14,7 @@ import (
 	"github.com/gizak/termui"
 )
 
-//IO数据
+//IOStat IO数据
 type IOStat struct {
 	ReadIO       uint64
 	ReadSectors  uint64
@@ -25,16 +25,16 @@ type IOStat struct {
 }
 
 var (
-	fsMap map[string]string  = map[string]string{}
-	ioMap map[string]*IOStat = map[string]*IOStat{}
+	fsMap = map[string]string{}
+	ioMap = map[string]*IOStat{}
 )
 
-//前置函数
+//init 前置函数
 func init() {
 	GetFirstIOData()
 }
 
-//获取首批数据
+//GetFirstIOData 获取首批数据
 func GetFirstIOData() {
 	//读取/proc/diskstats文件内容
 	bs, err := ioutil.ReadFile("/proc/diskstats")
@@ -92,7 +92,7 @@ func GetFirstIOData() {
 	}
 }
 
-//获取磁盘挂载点信息
+//GetDiskMounts 获取磁盘挂载点信息
 func GetDiskMounts() []string {
 	mounts := make([]string, 0)
 
@@ -130,7 +130,7 @@ func GetDiskMounts() []string {
 	return mounts
 }
 
-//刷新界面数据
+//RefreshDiskView 刷新界面数据
 func RefreshDiskView(interval uint64, gauges map[string]*termui.Gauge, p *termui.Par, lcs map[string]*termui.LineChart, chs chan bool) {
 	defer func(ch chan bool) {
 		ch <- true
@@ -263,13 +263,13 @@ func RefreshDiskView(interval uint64, gauges map[string]*termui.Gauge, p *termui
 
 		if bWriteXlsx {
 			xlsx.SetCellValue("Disk", fmt.Sprintf("%c%d", 'B'+diskCount, diskXlsxCount+2), stat.Percent)
-			diskCount += 1
+			diskCount++
 		}
 	}
-	diskXlsxCount += 1
+	diskXlsxCount++
 }
 
-//刷新后台数据
+//RefreshDiskData 刷新后台数据
 func RefreshDiskData(interval uint64) {
 	//读取/proc/diskstats文件内容
 	bs, err := ioutil.ReadFile("/proc/diskstats")
@@ -335,8 +335,8 @@ func RefreshDiskData(interval uint64) {
 		xlsx.SetCellValue("Disk", fmt.Sprintf("A%d", diskXlsxCount+2), time.Now().Format("15:04:05"))
 		for _, stat := range ioMap {
 			xlsx.SetCellValue("Disk", fmt.Sprintf("%c%d", 'B'+diskCount, diskXlsxCount+2), stat.Percent)
-			diskCount += 1
+			diskCount++
 		}
-		diskXlsxCount += 1
+		diskXlsxCount++
 	}
 }

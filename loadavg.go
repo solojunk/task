@@ -13,9 +13,9 @@ import (
 	"github.com/gizak/termui"
 )
 
-var cpuCores float64 = float64(runtime.NumCPU())
+var cpuCores = float64(runtime.NumCPU())
 
-//刷新界面数据
+//RefreshLoadavgView 刷新界面数据
 func RefreshLoadavgView(p *termui.Par, lcs map[string]*termui.LineChart, chs chan bool) {
 	defer func(ch chan bool) {
 		ch <- true
@@ -67,11 +67,11 @@ func RefreshLoadavgView(p *termui.Par, lcs map[string]*termui.LineChart, chs cha
 		xlsx.SetCellValue("Loadavg", fmt.Sprintf("C%d", loadXlsxCount+2), Load1min)
 		xlsx.SetCellValue("Loadavg", fmt.Sprintf("D%d", loadXlsxCount+2), Load5min)
 		xlsx.SetCellValue("Loadavg", fmt.Sprintf("E%d", loadXlsxCount+2), Load15min)
-		loadXlsxCount += 1
+		loadXlsxCount++
 	}
 }
 
-//刷新后台数据
+//RefreshLoadavgData 刷新后台数据
 func RefreshLoadavgData() {
 	//读取/proc/meminfo文件内容
 	bs, err := ioutil.ReadFile("/proc/loadavg")
@@ -102,6 +102,6 @@ func RefreshLoadavgData() {
 		xlsx.SetCellValue("Loadavg", fmt.Sprintf("C%d", loadXlsxCount+2), Load1min)
 		xlsx.SetCellValue("Loadavg", fmt.Sprintf("D%d", loadXlsxCount+2), Load5min)
 		xlsx.SetCellValue("Loadavg", fmt.Sprintf("E%d", loadXlsxCount+2), Load15min)
-		loadXlsxCount += 1
+		loadXlsxCount++
 	}
 }

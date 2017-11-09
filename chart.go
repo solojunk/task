@@ -18,7 +18,7 @@ var (
 	procXlsxCount uint64
 )
 
-//初始化xlsx文件结构
+//InitXlsxFile 初始化xlsx文件结构
 func InitXlsxFile(pids []string, filename string) {
 	bWriteXlsx = true
 	xlsxName = filename
@@ -35,7 +35,7 @@ func InitXlsxFile(pids []string, filename string) {
 	count := 0
 	for name := range ioMap {
 		xlsx.SetCellValue("Disk", fmt.Sprintf("%c1", 'B'+count), name)
-		count += 1
+		count++
 	}
 
 	xlsx.NewSheet("Network")
@@ -59,7 +59,7 @@ func InitXlsxFile(pids []string, filename string) {
 	}
 }
 
-//结束时保存数据到文件
+//FinishAndGenerateChart 结束时保存数据到文件
 func FinishAndGenerateChart() {
 	cpuChart := fmt.Sprintf(`{"type":"line","series":[{"name":"CPU!$B$1","categories":"CPU!$A$2:$A$%d","values":"CPU!$B$2:$B$%d"}],"title":{"name":"CPU使用率(%%)"}}`, cpuXlsxCount+1, cpuXlsxCount+1)
 	xlsx.AddChart("CPU", "C1", cpuChart)
@@ -84,7 +84,7 @@ func FinishAndGenerateChart() {
 		series = fmt.Sprintf(`{"name":"Network!$%c$1","categories":"Network!$A$2:$A$%d","values":"Network!$%c$2:$%c$%d"}`, 'B'+i*2, netXlsxCount+1, 'B'+i*2, 'B'+i*2, netXlsxCount+1)
 		ioSeries := fmt.Sprintf(`{"name":"Network!$%c$1","categories":"Network!$A$2:$A$%d","values":"Network!$%c$2:$%c$%d"}`, 'B'+i*2+1, netXlsxCount+1, 'B'+i*2+1, 'B'+i*2+1, netXlsxCount+1)
 		series = fmt.Sprintf("%s,%s", series, ioSeries)
-		i += 1
+		i++
 
 		netChart := fmt.Sprintf(`{"type":"line","series":[%s],"title":{"name":"%s网卡流量速率(KB/s)"}}`, series, name)
 		xlsx.AddChart("Network", fmt.Sprintf("%c%d", 'B'+len(netMap)*2, i*15-14), netChart)
@@ -111,7 +111,7 @@ func FinishAndGenerateChart() {
 		series = fmt.Sprintf(`{"name":"Process!$%c$1","categories":"Process!$A$2:$A$%d","values":"Process!$%c$2:$%c$%d"}`, 'B'+i*2, procXlsxCount+1, 'B'+i*2, 'B'+i*2, procXlsxCount+1)
 		procSeries := fmt.Sprintf(`{"name":"Process!$%c$1","categories":"Process!$A$2:$A$%d","values":"Process!$%c$2:$%c$%d"}`, 'B'+i*2+1, procXlsxCount+1, 'B'+i*2+1, 'B'+i*2+1, procXlsxCount+1)
 		series = fmt.Sprintf("%s,%s", series, procSeries)
-		i += 1
+		i++
 
 		procChart := fmt.Sprintf(`{"type":"line","series":[%s],"title":{"name":"进程PID=%s的资源使用百分比(%%)"}}`, series, pid)
 		xlsx.AddChart("Process", fmt.Sprintf("%c%d", 'B'+len(procUser)*2, i*15-14), procChart)

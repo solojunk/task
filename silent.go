@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-//初始化静默运行流程
+//InitSilent 初始化静默运行流程
 func InitSilent(interval, count uint64, pids []string) {
 	logger.Printf("Run InitSilent!\n")
 
@@ -43,9 +43,9 @@ func InitSilent(interval, count uint64, pids []string) {
 	}
 }
 
-//刷新数据
+//RefreshData 刷新数据
 func RefreshData(interval uint64, pids []string) {
-	go RefreshCpuData()
+	go RefreshCPUData()
 	go RefreshMemoryData()
 	go RefreshDiskData(interval)
 	go RefreshNetworkData(interval)

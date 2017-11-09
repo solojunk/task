@@ -13,13 +13,13 @@ import (
 	"github.com/gizak/termui"
 )
 
-//网卡信息
+//NetworkInfo 网卡信息
 type NetworkInfo struct {
-	Ip  string
+	IP  string
 	Mac string
 }
 
-//网卡数据
+//NetworkStat 网卡数据
 type NetworkStat struct {
 	RxBytes uint64
 	TxBytes uint64
@@ -28,16 +28,16 @@ type NetworkStat struct {
 }
 
 var (
-	netInfo map[string]*NetworkInfo = map[string]*NetworkInfo{}
-	netMap  map[string]*NetworkStat = map[string]*NetworkStat{}
+	netInfo = map[string]*NetworkInfo{}
+	netMap  = map[string]*NetworkStat{}
 )
 
-//前置函数
+//init 前置函数
 func init() {
 	GetFirstNetworkData()
 }
 
-//获取首批数据
+//GetFirstNetworkData 获取首批数据
 func GetFirstNetworkData() {
 	//读取/proc/net/dev文件内容
 	bs, err := ioutil.ReadFile("/proc/net/dev")
@@ -102,16 +102,16 @@ func GetFirstNetworkData() {
 
 			fields[1] = strings.TrimRight(fields[1], "\n")
 			if fields[0] == "IPADDR" {
-				net.Ip = strings.Trim(fields[1], "\"")
+				net.IP = strings.Trim(fields[1], "\"")
 			} else if fields[0] == "HWADDR" {
 				net.Mac = strings.Trim(fields[1], "\"")
 			}
-			if len(net.Ip) > 0 && len(net.Mac) > 0 {
+			if len(net.IP) > 0 && len(net.Mac) > 0 {
 				break
 			}
 		}
-		if len(net.Ip) == 0 {
-			net.Ip = "0.0.0.0"
+		if len(net.IP) == 0 {
+			net.IP = "0.0.0.0"
 		}
 		if len(net.Mac) == 0 {
 			net.Mac = "00:00:00:00:00:00"
@@ -120,7 +120,7 @@ func GetFirstNetworkData() {
 	}
 }
 
-//刷新界面数据
+//RefreshNetworkView 刷新界面数据
 func RefreshNetworkView(interval uint64, p *termui.Par, lcs map[string]*termui.LineChart, chs chan bool) {
 	defer func(ch chan bool) {
 		ch <- true
@@ -175,11 +175,11 @@ func RefreshNetworkView(interval uint64, p *termui.Par, lcs map[string]*termui.L
 		}
 
 		if len(parText) > 0 {
-			parText = fmt.Sprintf("%s\nName: %4s Ip: %15s Mac: %17s RXBytes: %16d TXBytes: %16d",
-				parText, name, net.Ip, net.Mac, RxBytes, TxBytes)
+			parText = fmt.Sprintf("%s\nName: %4s IP: %15s Mac: %17s RXBytes: %16d TXBytes: %16d",
+				parText, name, net.IP, net.Mac, RxBytes, TxBytes)
 		} else {
-			parText = fmt.Sprintf("Name: %4s Ip: %15s Mac: %17s RXBytes: %16d TXBytes: %16d",
-				name, net.Ip, net.Mac, RxBytes, TxBytes)
+			parText = fmt.Sprintf("Name: %4s IP: %15s Mac: %17s RXBytes: %16d TXBytes: %16d",
+				name, net.IP, net.Mac, RxBytes, TxBytes)
 		}
 	}
 
@@ -210,13 +210,13 @@ func RefreshNetworkView(interval uint64, p *termui.Par, lcs map[string]*termui.L
 		if bWriteXlsx {
 			xlsx.SetCellValue("Network", fmt.Sprintf("%c%d", 'B'+netCount*2, netXlsxCount+2), stat.RxSpeed)
 			xlsx.SetCellValue("Network", fmt.Sprintf("%c%d", 'B'+netCount*2+1, netXlsxCount+2), stat.TxSpeed)
-			netCount += 1
+			netCount++
 		}
 	}
-	netXlsxCount += 1
+	netXlsxCount++
 }
 
-//刷新后台数据
+//RefreshNetworkData 刷新后台数据
 func RefreshNetworkData(interval uint64) {
 	//读取/proc/net/dev文件内容
 	bs, err := ioutil.ReadFile("/proc/net/dev")
@@ -267,8 +267,8 @@ func RefreshNetworkData(interval uint64) {
 		for _, stat := range netMap {
 			xlsx.SetCellValue("Network", fmt.Sprintf("%c%d", 'B'+netCount*2, netXlsxCount+2), stat.RxSpeed)
 			xlsx.SetCellValue("Network", fmt.Sprintf("%c%d", 'B'+netCount*2+1, netXlsxCount+2), stat.TxSpeed)
-			netCount += 1
+			netCount++
 		}
-		netXlsxCount += 1
+		netXlsxCount++
 	}
 }

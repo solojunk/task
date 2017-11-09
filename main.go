@@ -50,7 +50,7 @@ func main() {
 			InitSilent(interval, count, pids)
 
 		} else {
-			err = InitTermUi()
+			err = InitTermUI()
 			if err != nil {
 				logger.Printf("Init TermUi failed! error:%s\n", err.Error())
 				return
@@ -65,7 +65,7 @@ func main() {
 	termui.Close()
 }
 
-//检查启动参数
+//InitFlag 检查启动参数
 func InitFlag() (bool, bool, uint64, uint64, []string, string, error) {
 	var err error
 	var daemon, silent, help bool
@@ -149,8 +149,8 @@ Options:`)
 `)
 }
 
-//初始化TermUI组件
-func InitTermUi() error {
+//InitTermUI 初始化TermUI组件
+func InitTermUI() error {
 	if err := termui.Init(); err != nil {
 		fmt.Println("Init failed! reason:", err)
 		return err

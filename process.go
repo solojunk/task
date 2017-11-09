@@ -15,11 +15,11 @@ import (
 
 var (
 	lastTotalTime uint64
-	lastPcpuTime  map[string]uint64 = map[string]uint64{}
-	procUser      map[string]string = map[string]string{}
+	lastPcpuTime  = map[string]uint64{}
+	procUser      = map[string]string{}
 )
 
-//获取首批数据
+//GetFirstProcessData 获取首批数据
 func GetFirstProcessData(pids []string) {
 	//读取/proc/stat文件内容
 	bs, err := ioutil.ReadFile("/proc/stat")
@@ -89,7 +89,7 @@ func GetFirstProcessData(pids []string) {
 	}
 }
 
-//刷新界面数据
+//RefreshProcessView 刷新界面数据
 func RefreshProcessView(pids []string, p *termui.Par, lcs map[string]*termui.LineChart, chs chan bool) {
 	defer func(ch chan bool) {
 		ch <- true
@@ -210,14 +210,14 @@ func RefreshProcessView(pids []string, p *termui.Par, lcs map[string]*termui.Lin
 			xlsx.SetCellValue("Process", fmt.Sprintf("%c%d", 'B'+i*2+1, procXlsxCount+2), pmem)
 		}
 	}
-	procXlsxCount += 1
+	procXlsxCount++
 
 	if len(parText) > 0 {
 		p.Text = parText
 	}
 }
 
-//刷新后台数据
+//RefreshProcessData 刷新后台数据
 func RefreshProcessData(pids []string) {
 	if len(pids) == 0 {
 		return
@@ -307,5 +307,5 @@ func RefreshProcessData(pids []string) {
 			xlsx.SetCellValue("Process", fmt.Sprintf("%c%d", 'B'+i*2+1, procXlsxCount+2), pmem)
 		}
 	}
-	procXlsxCount += 1
+	procXlsxCount++
 }

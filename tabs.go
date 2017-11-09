@@ -7,7 +7,7 @@ import (
 	"github.com/gizak/termui/extra"
 )
 
-//初始化TermUI界面
+//InitTabs 初始化TermUI界面
 func InitTabs(interval, count uint64, pids []string) {
 	//CPU
 	tab1 := extra.NewTab(" CPU      ")
@@ -88,7 +88,7 @@ func InitTabs(interval, count uint64, pids []string) {
 		ioPercent.DotStyle = 'o'
 		ioCharts[disk] = ioPercent
 		tab3.AddBlocks(ioPercent)
-		position += 1
+		position++
 	}
 
 	//Network
@@ -97,7 +97,7 @@ func InitTabs(interval, count uint64, pids []string) {
 	netOverview.Height = 3 + len(netMap)
 	netOverview.Width = 112
 	netOverview.BorderLabel = "Network Overview"
-	netOverview.Text = "Name: eth1 Ip: 0.0.0.0 Mac: 00:00:00:00:00:00 RXBytes: 0 TXBytes: 0"
+	netOverview.Text = "Name: eth1 IP: 0.0.0.0 Mac: 00:00:00:00:00:00 RXBytes: 0 TXBytes: 0"
 	tab4.AddBlocks(netOverview)
 
 	position = 0
@@ -126,7 +126,7 @@ func InitTabs(interval, count uint64, pids []string) {
 		netCharts[fmt.Sprintf("%s-Tx", net)] = netTx
 		tab4.AddBlocks(netTx)
 
-		position += 1
+		position++
 	}
 
 	//Loadavg
@@ -177,16 +177,16 @@ func InitTabs(interval, count uint64, pids []string) {
 		tab6.AddBlocks(procOverview)
 
 		for i, pid := range pids {
-			procCpu := termui.NewLineChart()
-			procCpu.BorderLabel = "Process CPU Used"
-			procCpu.Data = make([]float64, 48)
-			procCpu.Width = 55
-			procCpu.Height = 20
-			procCpu.Y = 3 + len(pids) + procCpu.Height*i
-			procCpu.Mode = "dot"
-			procCpu.DotStyle = 'o'
-			procCharts[fmt.Sprintf("%s-cpu", pid)] = procCpu
-			tab6.AddBlocks(procCpu)
+			procCPU := termui.NewLineChart()
+			procCPU.BorderLabel = "Process CPU Used"
+			procCPU.Data = make([]float64, 48)
+			procCPU.Width = 55
+			procCPU.Height = 20
+			procCPU.Y = 3 + len(pids) + procCPU.Height*i
+			procCPU.Mode = "dot"
+			procCPU.DotStyle = 'o'
+			procCharts[fmt.Sprintf("%s-cpu", pid)] = procCPU
+			tab6.AddBlocks(procCPU)
 
 			procMem := termui.NewLineChart()
 			procMem.BorderLabel = "Process Mem Used"
@@ -234,7 +234,7 @@ func InitTabs(interval, count uint64, pids []string) {
 		}
 
 		if t.Count%interval == 0 {
-			go RefreshCpuView(cpuOverview, cpuPercent, chs)
+			go RefreshCPUView(cpuOverview, cpuPercent, chs)
 			go RefreshMemoryView(memOverview, memPercent, chs)
 			go RefreshDiskView(interval, diskCharts, diskOverview, ioCharts, chs)
 			go RefreshNetworkView(interval, netOverview, netCharts, chs)
