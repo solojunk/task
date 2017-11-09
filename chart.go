@@ -3,21 +3,22 @@ package main
 import (
 	"fmt"
 
-	"github.com/solojunk/excelize"
+	"github.com/xuri/excelize"
 )
 
 var (
 	bWriteXlsx    bool
 	xlsxName      string
 	xlsx          *excelize.File
-	cpuXlsxCount  uint64 = 0
-	memXlsxCount  uint64 = 0
-	diskXlsxCount uint64 = 0
-	netXlsxCount  uint64 = 0
-	loadXlsxCount uint64 = 0
-	procXlsxCount uint64 = 0
+	cpuXlsxCount  uint64
+	memXlsxCount  uint64
+	diskXlsxCount uint64
+	netXlsxCount  uint64
+	loadXlsxCount uint64
+	procXlsxCount uint64
 )
 
+//初始化xlsx文件结构
 func InitXlsxFile(pids []string, filename string) {
 	bWriteXlsx = true
 	xlsxName = filename
@@ -32,7 +33,7 @@ func InitXlsxFile(pids []string, filename string) {
 
 	xlsx.NewSheet("Disk")
 	count := 0
-	for name, _ := range ioMap {
+	for name := range ioMap {
 		xlsx.SetCellValue("Disk", fmt.Sprintf("%c1", 'B'+count), name)
 		count += 1
 	}
@@ -51,13 +52,14 @@ func InitXlsxFile(pids []string, filename string) {
 
 	if len(pids) > 0 {
 		xlsx.NewSheet("Process")
-		for i, _ := range pids {
+		for i := range pids {
 			xlsx.SetCellValue("Process", fmt.Sprintf("%c1", 'B'+i*2), "pcpu")
 			xlsx.SetCellValue("Process", fmt.Sprintf("%c1", 'B'+i*2+1), "pmem")
 		}
 	}
 }
 
+//结束时保存数据到文件
 func FinishAndGenerateChart() {
 	cpuChart := fmt.Sprintf(`{"type":"line","series":[{"name":"CPU!$B$1","categories":"CPU!$A$2:$A$%d","values":"CPU!$B$2:$B$%d"}],"title":{"name":"CPU使用率(%%)"}}`, cpuXlsxCount+1, cpuXlsxCount+1)
 	xlsx.AddChart("CPU", "C1", cpuChart)
@@ -78,7 +80,7 @@ func FinishAndGenerateChart() {
 	xlsx.AddChart("Disk", fmt.Sprintf("%c1", 'B'+len(ioMap)), diskChart)
 
 	i := 0
-	for name, _ := range netMap {
+	for name := range netMap {
 		series = fmt.Sprintf(`{"name":"Network!$%c$1","categories":"Network!$A$2:$A$%d","values":"Network!$%c$2:$%c$%d"}`, 'B'+i*2, netXlsxCount+1, 'B'+i*2, 'B'+i*2, netXlsxCount+1)
 		ioSeries := fmt.Sprintf(`{"name":"Network!$%c$1","categories":"Network!$A$2:$A$%d","values":"Network!$%c$2:$%c$%d"}`, 'B'+i*2+1, netXlsxCount+1, 'B'+i*2+1, 'B'+i*2+1, netXlsxCount+1)
 		series = fmt.Sprintf("%s,%s", series, ioSeries)
@@ -105,7 +107,7 @@ func FinishAndGenerateChart() {
 	}
 
 	i = 0
-	for pid, _ := range procUser {
+	for pid := range procUser {
 		series = fmt.Sprintf(`{"name":"Process!$%c$1","categories":"Process!$A$2:$A$%d","values":"Process!$%c$2:$%c$%d"}`, 'B'+i*2, procXlsxCount+1, 'B'+i*2, 'B'+i*2, procXlsxCount+1)
 		procSeries := fmt.Sprintf(`{"name":"Process!$%c$1","categories":"Process!$A$2:$A$%d","values":"Process!$%c$2:$%c$%d"}`, 'B'+i*2+1, procXlsxCount+1, 'B'+i*2+1, 'B'+i*2+1, procXlsxCount+1)
 		series = fmt.Sprintf("%s,%s", series, procSeries)

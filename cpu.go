@@ -12,6 +12,7 @@ import (
 	"github.com/gizak/termui"
 )
 
+//CPU时钟周期
 type CpuClocks struct {
 	Total   uint64
 	User    uint64
@@ -28,10 +29,12 @@ var (
 	lastCpuTime CpuClocks
 )
 
+//前置函数
 func init() {
 	GetFirstCpuData()
 }
 
+//获取首批数据
 func GetFirstCpuData() {
 	//读取/proc/stat文件内容
 	bs, err := ioutil.ReadFile("/proc/stat")
@@ -62,6 +65,7 @@ func GetFirstCpuData() {
 	lastCpuTime.Total = lastCpuTime.User + lastCpuTime.System + lastCpuTime.Idle + lastCpuTime.Wa + lastCpuTime.Hi + lastCpuTime.Si + lastCpuTime.St
 }
 
+//刷新界面数据
 func RefreshCpuView(p *termui.Par, lc *termui.LineChart, chs chan bool) {
 	defer func(ch chan bool) {
 		ch <- true
@@ -129,6 +133,7 @@ func RefreshCpuView(p *termui.Par, lc *termui.LineChart, chs chan bool) {
 	}
 }
 
+//刷新后台数据
 func RefreshCpuData() {
 	//读取/proc/stat文件内容
 	bs, err := ioutil.ReadFile("/proc/stat")

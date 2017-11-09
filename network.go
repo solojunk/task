@@ -13,11 +13,13 @@ import (
 	"github.com/gizak/termui"
 )
 
+//网卡信息
 type NetworkInfo struct {
 	Ip  string
 	Mac string
 }
 
+//网卡数据
 type NetworkStat struct {
 	RxBytes uint64
 	TxBytes uint64
@@ -30,10 +32,12 @@ var (
 	netMap  map[string]*NetworkStat = map[string]*NetworkStat{}
 )
 
+//前置函数
 func init() {
 	GetFirstNetworkData()
 }
 
+//获取首批数据
 func GetFirstNetworkData() {
 	//读取/proc/net/dev文件内容
 	bs, err := ioutil.ReadFile("/proc/net/dev")
@@ -116,6 +120,7 @@ func GetFirstNetworkData() {
 	}
 }
 
+//刷新界面数据
 func RefreshNetworkView(interval uint64, p *termui.Par, lcs map[string]*termui.LineChart, chs chan bool) {
 	defer func(ch chan bool) {
 		ch <- true
@@ -186,7 +191,7 @@ func RefreshNetworkView(interval uint64, p *termui.Par, lcs map[string]*termui.L
 		xlsx.SetCellValue("Network", fmt.Sprintf("A%d", netXlsxCount+2), time.Now().Format("15:04:05"))
 	}
 
-	var netCount int = 0
+	var netCount int
 	for name, stat := range netMap {
 		if lc, exist := lcs[fmt.Sprintf("%s-Rx", name)]; exist {
 			lc.BorderLabel = fmt.Sprintf("Network RX Speed %s %dKB/s", name, stat.RxSpeed)
@@ -211,6 +216,7 @@ func RefreshNetworkView(interval uint64, p *termui.Par, lcs map[string]*termui.L
 	netXlsxCount += 1
 }
 
+//刷新后台数据
 func RefreshNetworkData(interval uint64) {
 	//读取/proc/net/dev文件内容
 	bs, err := ioutil.ReadFile("/proc/net/dev")
@@ -256,7 +262,7 @@ func RefreshNetworkData(interval uint64) {
 	}
 
 	if bWriteXlsx {
-		var netCount int = 0
+		var netCount int
 		xlsx.SetCellValue("Network", fmt.Sprintf("A%d", netXlsxCount+2), time.Now().Format("15:04:05"))
 		for _, stat := range netMap {
 			xlsx.SetCellValue("Network", fmt.Sprintf("%c%d", 'B'+netCount*2, netXlsxCount+2), stat.RxSpeed)

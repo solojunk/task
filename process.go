@@ -19,6 +19,7 @@ var (
 	procUser      map[string]string = map[string]string{}
 )
 
+//获取首批数据
 func GetFirstProcessData(pids []string) {
 	//读取/proc/stat文件内容
 	bs, err := ioutil.ReadFile("/proc/stat")
@@ -88,6 +89,7 @@ func GetFirstProcessData(pids []string) {
 	}
 }
 
+//刷新界面数据
 func RefreshProcessView(pids []string, p *termui.Par, lcs map[string]*termui.LineChart, chs chan bool) {
 	defer func(ch chan bool) {
 		ch <- true
@@ -215,6 +217,7 @@ func RefreshProcessView(pids []string, p *termui.Par, lcs map[string]*termui.Lin
 	}
 }
 
+//刷新后台数据
 func RefreshProcessData(pids []string) {
 	if len(pids) == 0 {
 		return

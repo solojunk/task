@@ -13,6 +13,7 @@ import (
 	"github.com/gizak/termui"
 )
 
+//刷新界面数据
 func RefreshMemoryView(p *termui.Par, lc *termui.LineChart, chs chan bool) {
 	defer func(ch chan bool) {
 		ch <- true
@@ -93,6 +94,7 @@ func RefreshMemoryView(p *termui.Par, lc *termui.LineChart, chs chan bool) {
 	}
 }
 
+//刷新后台数据
 func RefreshMemoryData() {
 	//读取/proc/meminfo文件内容
 	bs, err := ioutil.ReadFile("/proc/meminfo")

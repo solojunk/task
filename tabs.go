@@ -7,6 +7,7 @@ import (
 	"github.com/gizak/termui/extra"
 )
 
+//初始化TermUI界面
 func InitTabs(interval, count uint64, pids []string) {
 	//CPU
 	tab1 := extra.NewTab(" CPU      ")
@@ -75,7 +76,7 @@ func InitTabs(interval, count uint64, pids []string) {
 
 	position := 0
 	ioCharts := make(map[string]*termui.LineChart)
-	for disk, _ := range ioMap {
+	for disk := range ioMap {
 		ioPercent := termui.NewLineChart()
 		ioPercent.BorderLabel = "IO Used"
 		ioPercent.Data = make([]float64, 63)
@@ -101,7 +102,7 @@ func InitTabs(interval, count uint64, pids []string) {
 
 	position = 0
 	netCharts := make(map[string]*termui.LineChart)
-	for net, _ := range netMap {
+	for net := range netMap {
 		netRx := termui.NewLineChart()
 		netRx.BorderLabel = "Network RX Speed"
 		netRx.Data = make([]float64, 48)

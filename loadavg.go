@@ -15,6 +15,7 @@ import (
 
 var cpuCores float64 = float64(runtime.NumCPU())
 
+//刷新界面数据
 func RefreshLoadavgView(p *termui.Par, lcs map[string]*termui.LineChart, chs chan bool) {
 	defer func(ch chan bool) {
 		ch <- true
@@ -70,6 +71,7 @@ func RefreshLoadavgView(p *termui.Par, lcs map[string]*termui.LineChart, chs cha
 	}
 }
 
+//刷新后台数据
 func RefreshLoadavgData() {
 	//读取/proc/meminfo文件内容
 	bs, err := ioutil.ReadFile("/proc/loadavg")
