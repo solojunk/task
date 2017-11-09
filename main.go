@@ -65,6 +65,7 @@ func main() {
 	termui.Close()
 }
 
+//检查启动参数
 func InitFlag() (bool, bool, uint64, uint64, []string, string, error) {
 	var err error
 	var daemon, silent, help bool
@@ -148,6 +149,7 @@ Options:`)
 `)
 }
 
+//初始化TermUI组件
 func InitTermUi() error {
 	if err := termui.Init(); err != nil {
 		fmt.Println("Init failed! reason:", err)
